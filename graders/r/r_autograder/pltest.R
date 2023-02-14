@@ -15,9 +15,13 @@ result <- tryCatch({
 
     ## Run tests in the test directory
     cat("[pltest] about to call tests from", getwd(), "\n")
-    test_results <- as.data.frame(tinytest::run_test_dir(tests_dir,
-                                                         lc_collate = NA,
-                                                         verbose = Sys.getenv("DEBUG", "off") == "on"))
+    test_results <- tinytest::run_test_dir(tests_dir,
+                                           lc_collate = NA,
+                                           verbose = Sys.getenv("DEBUG", "off") == "on")
+
+	## parse test results
+	images <- sapply(test_results, attr, "images")
+	test_results <- as.data.frame(test_results)
 
     ## Aggregate test results and process NAs as some question may have exited
     test_results <- test_results[with(test_results, order(file, first)), ]
@@ -33,7 +37,7 @@ result <- tryCatch({
     res <- res[, c("name", "max_points", "points", "output")]
 
     ## output
-    list(tests = res, score = score, succeeded = TRUE)
+    list(tests = res, score = score, succeeded = TRUE, images = images)
 },
 warning = function(w) list(tests = plr::message_to_test_result(w), score = 0, succeeded = FALSE),
 error = function(e) list(tests = plr::message_to_test_result(e), score = 0, succeeded = FALSE) )
