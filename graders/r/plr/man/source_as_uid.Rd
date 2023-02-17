@@ -6,11 +6,11 @@
 \alias{source_ref}
 \title{Source a file as a particular user}
 \usage{
-source_as_uid(file, uid = "ag")
+source_as_uid(file, uid = "ag", img_name = NULL)
 
-source_std(name, uid = "ag")
+source_std(name, uid = "ag", img_name = "std_plot.png")
 
-source_ref(name, uid = "ag")
+source_ref(name, uid = "ag", img_name = "ref_plot.png")
 }
 \arguments{
 \item{file}{Path to an R file to be sourced, typically containing student
@@ -23,6 +23,11 @@ character \code{uid} is supplied. Note that using this argument requires
 being the \sQuote{root} user. Default value of \code{"ag"} will source
 supplied code with privileges that prevent access to sensitive files such as
 reference solutions.}
+
+\item{img_name}{Optional character used as the file name for the
+\code{\link{png}} file that may be created while sourcing \code{file}. When
+\code{img_name} is NULL a random png name is created in the current working
+directory. No png file is created if no plotting happens in \code{file}.}
 
 \item{name}{Name of file (usually student or reference solution) to be
 sourced.}

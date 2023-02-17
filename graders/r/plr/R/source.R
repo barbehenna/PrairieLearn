@@ -20,6 +20,10 @@
 #' being the \sQuote{root} user. Default value of \code{"ag"} will source
 #' supplied code with privileges that prevent access to sensitive files such as
 #' reference solutions.
+#' @param img_name Optional character used as the file name for the
+#' \code{\link{png}} file that may be created while sourcing \code{file}. When
+#' \code{img_name} is NULL a random png name is created in the current working
+#' directory. No png file is created if no plotting happens in \code{file}.
 #'
 #' @return An environment containing objects created through sourcing the
 #' \code{file} as \code{uid}. Any sourced functions are modified such that
@@ -33,13 +37,16 @@
 #' std <- source_std("sub.R")
 #' ref <- source_ref("ans.R")
 #' }
-source_as_uid <- function(file, uid="ag") {
+source_as_uid <- function(file, uid="ag", img_name = NULL) {
 
   # get and set integer uid
   if (!is.null(uid) && class(uid) == "character") uid <- user_info(uid)$uid
 
   # handle incorrectly specified files
   if (!file.exists(file)) return(invisible(NULL))
+
+  # handle incorrectly specified files
+  if (is.null(img_name)) img_name <- tempfile(pattern = "plot_", tmpdir = ".", fileext = ".png")
 
   # change file permissions, track original file permissions
   oldmode <- file.mode(file)
@@ -48,7 +55,9 @@ source_as_uid <- function(file, uid="ag") {
   # safely source the file as specified uid to an environment
   sourced_env <- eval_safe({
     temp_env <- new.env()
-    source(file, temp_env)
+    png(img_name)
+    source(file, temp_env, print.eval = TRUE)
+    dev.off()
     temp_env
   }, uid = uid)
 
@@ -65,13 +74,13 @@ source_as_uid <- function(file, uid="ag") {
 }
 
 #' @rdname source_as_uid
-source_std <- function(name, uid = "ag") {
+source_std <- function(name, uid = "ag", img_name = "std_plot.png") {
   full_path <- file.path("/grade/student", name)
-  source_as_uid(file = full_path, uid = uid)
+  source_as_uid(file = full_path, uid = uid, img_name = img_name)
 }
 
 #' @rdname source_as_uid
-source_ref <- function(name, uid = "ag") {
+source_ref <- function(name, uid = "ag", img_name = "ref_plot.png") {
   full_path <- file.path("/grade/tests", name)
-  source_as_uid(file = full_path, uid = uid)
+  source_as_uid(file = full_path, uid = uid, img_name = img_name)
 }
