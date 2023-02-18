@@ -19,10 +19,10 @@ result <- tryCatch({
                                            lc_collate = NA,
                                            verbose = Sys.getenv("DEBUG", "off") == "on")
 
-	## parse test results
-	images <- sapply(test_results, attr, "images")
-	test_results <- as.data.frame(test_results)
-	test_results$images <- images
+    ## parse test results
+    images <- sapply(test_results, attr, "images")
+    test_results <- as.data.frame(test_results)
+    test_results$images <- images
 
     ## Aggregate test results and process NAs as some question may have exited
     test_results <- test_results[with(test_results, order(file, first)), ]
