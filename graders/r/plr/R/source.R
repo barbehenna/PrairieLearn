@@ -55,6 +55,7 @@ source_as_uid <- function(file, uid="ag", img_name = NULL) {
   # safely source the file as specified uid to an environment
   sourced_env <- eval_safe({
     temp_env <- new.env()
+    temp_env$img_name <- img_name
     png(img_name)
     source(file, temp_env, print.eval = TRUE)
     dev.off()
