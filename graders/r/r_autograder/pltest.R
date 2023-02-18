@@ -22,6 +22,7 @@ result <- tryCatch({
 	## parse test results
 	images <- sapply(test_results, attr, "images")
 	test_results <- as.data.frame(test_results)
+	test_results$images <- images
 
     ## Aggregate test results and process NAs as some question may have exited
     test_results <- test_results[with(test_results, order(file, first)), ]
@@ -34,10 +35,10 @@ result <- tryCatch({
     score <- base::sum(res$points) / base::sum(res$max_points) # total score
 
     ## Columns needed by PL
-    res <- res[, c("name", "max_points", "points", "output")]
+    res <- res[, c("name", "max_points", "points", "output", "images")]
 
     ## output
-    list(tests = res, score = score, succeeded = TRUE, images = images)
+    list(tests = res, score = score, succeeded = TRUE)
 },
 warning = function(w) list(tests = plr::message_to_test_result(w), score = 0, succeeded = FALSE),
 error = function(e) list(tests = plr::message_to_test_result(e), score = 0, succeeded = FALSE) )
