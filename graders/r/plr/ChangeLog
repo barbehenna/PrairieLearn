@@ -1,3 +1,11 @@
+2023-02-18  Alton Barbehenn    <barbehe2@illinois.edu>
+
+	* R/source.R: Capturing the image created while sourcing files
+	as a specific user
+	* NAMESPACE: Adding imports from grDevices
+	* DESCRIPTION: Adding grDevices as import and minor bumps to
+	version and date
+
 2023-01-24  Alton Barbehenn    <barbehe2@illinois.edu>
 
 	* DESCRIPTION: Version bump and adding David Dalpiaz as author
