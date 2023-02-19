@@ -20,13 +20,14 @@ result <- tryCatch({
                                            verbose = Sys.getenv("DEBUG", "off") == "on")
 
     ## parse test results
-    images <- sapply(test_results, attr, "images")
-    test_results <- as.data.frame(test_results)
-    test_results$images <- images
+    test_results_df <- as.data.frame(test_results)
+    test_results_df$images <- sapply(test_results, attr, "images")
+    test_results_df$message <- sapply(test_results, attr, "message")
+    test_results_df$description <- sapply(test_results, attr, "description")
 
     ## Aggregate test results and process NAs as some question may have exited
-    test_results <- test_results[with(test_results, order(file, first)), ]
-    res <- cbind(test_results, question_details)
+    test_results_df <- test_results_df[with(test_results_df, order(file, first)), ]
+    res <- cbind(test_results_df, question_details)
     ## Correct answers get full points, other get nothing
     res$points <- ifelse( !is.na(res$result) & res$result==TRUE,  res$max_points, 0)
     ## For false answer we collate call and diff output (from diffobj::diffPrint)
@@ -35,7 +36,7 @@ result <- tryCatch({
     score <- base::sum(res$points) / base::sum(res$max_points) # total score
 
     ## Columns needed by PL
-    res <- res[, c("name", "max_points", "points", "output", "images")]
+    res <- res[, c("name", "max_points", "points", "output", "images", "message", "description")]
 
     ## output
     list(tests = res, score = score, succeeded = TRUE)
